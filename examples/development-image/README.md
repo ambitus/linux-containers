@@ -12,7 +12,7 @@ To build this image:
 - Navigate to the directory containing the `Dockerfile`.
 - Run the docker build command:
 `docker build . --tag dev-image:latest`
-Note: This image may take a while to build as it compiles source for many of the packages.
+Note: This image may take a while to build as it compiles source for many of the packages. If you encounter any failures it's likely because all three key-servers have timed out at once; try again and it will usually work.
 
 Applications contained within:
 

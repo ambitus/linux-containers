@@ -78,11 +78,10 @@ required) - similar to ftp and anonymous ftp.  Requests are made for images
 using the docker _pull_ action, and images can be published to the registry
 via docker _push_.
 
-Images can be pulled from the default DockerHub
-([https://index.docker.io/v1/](https://index.docker.io/v1/)) or from private
-registries hosted within an enterprise.  Docker can be configured to reference
-these registries in a specific search order.  Images can be versioned using a
-docker mechanism called _tagging_.
+Images can be pulled from the default DockerHub (https://index.docker.io/v1/) or
+from private registries hosted within an enterprise.  Docker can be configured to
+reference these registries in a specific search order.  Images can be versioned
+using a docker mechanism called _tagging_.
 
 Registries are a mechanism for developers to share work and build their
 community.  Docker would not be a success today without DockerHub.  Registries
@@ -230,8 +229,8 @@ CMD ["python", "app.py"]
 #### Build and Tag the Image
 Now we will build the image, and "tag" it for use with other docker operations.
 Image tagging can be a little confusing at first.  We have created
-_**[a Docker tagging explanation](https://github.com/openzsx/openzsx/blob/master/containers/howto/tags_regs_userid.md)**_
-that describes how tagging works in more detail.
+_**[a Docker tagging explanation](./tags_regs_userid.md)**_ that describes how
+tagging works in more detail.
 
 One thing to highlight is that the image build process will use the **pip**
 package manager to obtain the _flask_ and _redis_ Python packages from the

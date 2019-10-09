@@ -1,6 +1,6 @@
 # Portainer
-Portainer is a graphical web interface to the Docker environment.  It allows a user
-to perform all of the same Docker admin tasks as from the command line.
+Portainer is a lightweight graphical web interface to the Docker environment.  It
+allows a user to perform all of the same Docker admin tasks as from the command line.
 
 There is no need to build a Portainer image for IBM Z, since it's implemented in
 Javascript, and not a compiled language.  For this reason, it's possible to pull the
@@ -24,6 +24,14 @@ This one command will accomplish several things:
   interface.
 - It will connect to the Docker daemon of the zCX appliance through the well-known
   Docker socket interface ```/var/run/docker.sock```.
+
+**Use the Interface**
+Once the Portainer container is running, point your browser
+to ```<appliance_ip>:9000``` to reach the Portainer web interface.  Please note that
+the first time you use this interface, you will have to set the initial password for
+the authorized user.  If you start the container, but don't log on within a few minutes,
+the container will timeout and exit.  If this happens, you will have to start the
+container again as outlined above, and log in.
 
 **Important Image Attributes:**
 

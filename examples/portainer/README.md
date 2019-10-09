@@ -11,6 +11,7 @@ Information about about the Portainer Docker image can be found at
 [https://hub.docker.com/r/portainer/portainer](https://hub.docker.com/r/portainer/portainer)
 
 **Pull and Run the Image:**
+
 ```
 docker run -d -p 9000:9000 --name portainer \
 -v /var/run/docker.sock:/var/run/docker.sock:ro \
@@ -25,7 +26,8 @@ This one command will accomplish several things:
 - It will connect to the Docker daemon of the zCX appliance through the well-known
   Docker socket interface ```/var/run/docker.sock```.
 
-**Use the Interface**
+**Use the Interface:**
+
 Once the Portainer container is running, point your browser
 to ```<appliance_ip>:9000``` to reach the Portainer web interface.  Please note that
 the first time you use this interface, you will have to set the initial password for

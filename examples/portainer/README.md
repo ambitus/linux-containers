@@ -27,7 +27,7 @@ This one command will accomplish several things:
 
 **Important Image Attributes**
 
+| Attribute     | Value        |
 |---------------|--------------|
 | Build time | n/a |
 | Installed size | ~23 MB |
-|---------------|--------------|

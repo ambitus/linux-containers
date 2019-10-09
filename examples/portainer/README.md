@@ -26,6 +26,8 @@ This one command will accomplish several things:
   Docker socket interface ```/var/run/docker.sock```.
 
 **Important Image Attributes**
-|--------|--------------|
+
+|---------------|--------------|
 | Build time | n/a |
-|Installed size | ~23 MB |
+| Installed size | ~23 MB |
+|---------------|--------------|

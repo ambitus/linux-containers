@@ -25,7 +25,7 @@ This one command will accomplish several things:
 - It will connect to the Docker daemon of the zCX appliance through the well-known
   Docker socket interface ```/var/run/docker.sock```.
 
-**Important Image Attributes**
+**Important Image Attributes:**
 
 | Attribute     | Value        |
 |---------------|--------------|

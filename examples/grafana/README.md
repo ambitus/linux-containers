@@ -49,6 +49,7 @@ the Docker image or point to it when launching Docker as a container.
 naming it prometheus.
 2. Download the Prometheus Dockerfile from
 [https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/Prometheus/Dockerfile](https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/Prometheus/Dockerfile)
+into ```$HOME/prometheus```
 3. Build the Prometheus image:
 - ```docker build -t prometheus .``` (be sure to include the .)
 
@@ -102,6 +103,7 @@ The version number may be different than ```latest```.
 naming it ```grafana```.
 2. Download the Grafana Docker file from
 [https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/Grafana/Dockerfile](https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/Grafana/Dockerfile)
+into ```$HOME/grafana```
 3. Build the Grafana image:
 - ```docker build -t grafana .``` (be sure to include the .)
 

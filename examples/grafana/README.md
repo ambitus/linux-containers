@@ -1,7 +1,9 @@
 # Grafana
-Grafana is a graphical interface to Docker and platform resource usage.  Grafana
-aggregates several metrics into provide an operational view of applications running
-inside of an IBM zCX Docker appliance.
+Grafana provides a framework for creating dashboards of time series data that users
+access through a browser.  It is often used to monitor platform and application
+resource usage metrics to help administrators operate their systems.  This example
+demonstrates the common practice of aggregating several open source packages to
+create a workload.
 
 There are four Docker images that make up what we are calling the Grafana monitoring
 interface:
@@ -15,15 +17,14 @@ interface:
 
 _**cAdvisor**_ and _**node_exporter**_ collect and feed time-sequenced information
 about running containers and appliance resource usage to _**prometheus**_, which then
-passes the aggregated information into _**grafana**_ for presentation to users
-through a web interface.
+passes the aggregated information into _**grafana**_ for presentation.
 
 ## Building the Images
 
 All of these Docker images have to be built on an IBM Z platform - either Linux on
 Z running Docker, or an IBM zCX appliance.  Once all four of the images are built,
-can be run to create a functional monitoring environment that can be accessed by
-a user through the Grafana interface.
+they can be run to create a functional monitoring environment that users consume
+through Grafana.
 
 Start by logging into the platform where you will build the images - either an IBM
 zCX appliance, or a Linux on Z system with access to the internet.
@@ -32,11 +33,12 @@ zCX appliance, or a Linux on Z system with access to the internet.
 
 | Attribute     | Value        |
 |---------------|--------------|
-| Total Build time | 30 minutes |
-| cAdvisor image size | ~xx MB |
-| node_exporter image size | ~xx MB |
-| Prometheus image size | ~xx MB |
-| Grafana image size | ~xx MB |
+| Total Build time | ~45 minutes |
+| Prometheus image size | ~450 MB |
+| node_exporter image size | ~135 MB |
+| cAdvisor image size | ~550 MB |
+| Grafana image size | ~1.25 GB |
+| Total footprint | ~2.4 GB |
 
 **Build Prometheus**
 Prometheus collects metrics based on end points defined in a configuration file

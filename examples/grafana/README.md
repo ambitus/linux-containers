@@ -38,17 +38,20 @@ zCX appliance, or a Linux on Z system with access to the internet.
 | Prometheus image size | ~xx MB |
 | Grafana image size | ~xx MB |
 
-**Build cAdvisor:**
-1. Create a directory within your home directory, and cd into it. We recommend naming
-   it cadvisor.
-2. Download the cAdvisor Dockerfile from
-[https://github.com/linux-on-ibm-z/dockerfile-examples/tree/master/cAdvisor](https://github.com/linux-on-ibm-z/dockerfile-examples/tree/master/cAdvisor)
-into ```$HOME/cadvisor```.
-3. Build the cAdvisor image:
-- ```docker build -t cadvisor .``` (be sure to include the .)
+**Build Prometheus**
+Prometheus collects metrics based on end points defined in a configuration file
+called ```prometheus.yml```. You can either build this configuration file into
+the Docker image or point to it when launching Docker as a container.
+
+1. Create a directory within your home directory, and cd into it. We recommend
+naming it prometheus.
+2. Download the Prometheus Dockerfile from
+[https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/Prometheus/Dockerfile](https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/Prometheus/Dockerfile)
+3. Build the Prometheus image:
+- ```docker build -t prometheus .``` (be sure to include the .)
 
 When the build is complete, you should see:
-- ```Successfully tagged cadvisor:latest```
+- ```Successfully tagged prometheus.1.7.1:latest```
 
 The version number may be different than ```latest```.
 
@@ -78,20 +81,17 @@ When the build is complete, you should see:
 
 The version number may be different than ```latest```.
 
-**Build Prometheus**
-Prometheus collects metrics based on end points defined in a configuration file
-called ```prometheus.yml```. You can either build this configuration file into
-the Docker image or point to it when launching Docker as a container.
-
-1. Create a directory within your home directory, and cd into it. We recommend
-naming it prometheus.
-2. Download the Prometheus Dockerfile from
-[https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/Prometheus/Dockerfile](https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/Prometheus/Dockerfile)
-3. Build the Prometheus image:
-- ```docker build -t prometheus .``` (be sure to include the .)
+**Build cAdvisor:**
+1. Create a directory within your home directory, and cd into it. We recommend naming
+   it cadvisor.
+2. Download the cAdvisor Dockerfile from
+[https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/cAdvisor/Dockerfile](https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/cAdvisor/Dockerfile)
+into ```$HOME/cadvisor```.
+3. Build the cAdvisor image:
+- ```docker build -t cadvisor .``` (be sure to include the .)
 
 When the build is complete, you should see:
-- ```Successfully tagged prometheus.1.7.1:latest```
+- ```Successfully tagged cadvisor:latest```
 
 The version number may be different than ```latest```.
 

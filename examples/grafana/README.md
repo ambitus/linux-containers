@@ -58,6 +58,20 @@ When the build is complete, you should see:
 
 The version number may be different than ```latest```.
 
+**Build cAdvisor:**
+1. Create a directory within your home directory, and cd into it. We recommend naming
+   it cadvisor.
+2. Download the cAdvisor Dockerfile from
+[https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/cAdvisor/Dockerfile](https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/cAdvisor/Dockerfile)
+into ```$HOME/cadvisor```.
+3. Build the cAdvisor image:
+- ```docker build -t cadvisor .``` (be sure to include the .)
+
+When the build is complete, you should see:
+- ```Successfully tagged cadvisor:latest```
+
+The version number may be different than ```latest```.
+
 **Build node_exporter:**
 1. Create a directory within your home directory, and cd into it. We recommend naming
    it nodeexporter.
@@ -84,20 +98,6 @@ When the build is complete, you should see:
 
 The version number may be different than ```latest```.
 
-**Build cAdvisor:**
-1. Create a directory within your home directory, and cd into it. We recommend naming
-   it cadvisor.
-2. Download the cAdvisor Dockerfile from
-[https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/cAdvisor/Dockerfile](https://github.com/linux-on-ibm-z/dockerfile-examples/blob/master/cAdvisor/Dockerfile)
-into ```$HOME/cadvisor```.
-3. Build the cAdvisor image:
-- ```docker build -t cadvisor .``` (be sure to include the .)
-
-When the build is complete, you should see:
-- ```Successfully tagged cadvisor:latest```
-
-The version number may be different than ```latest```.
-
 **Build Grafana**
 1. Create a directory within your home directory, and cd into it. We recommend
 naming it ```grafana```.
@@ -112,9 +112,49 @@ When the build is complete, you should see:
 
 The version number may be different than ```latest```.
 
-## Run the Containers
+**Survey Your Imags**
+Now run ```docker images``` from the command line to verify that all 4 of the images
+you have built exist.  The sizes of these images should roughly match the values in
+the image attributes table above.
 
-- ```coming soon```
+## Run the Containers
+Once the containers have been built, they are ready to run.  If you have created
+these images on a Linux on Z system, you will have to transport the images to the
+target zCX appliance through a save/ftp/load operation, or by push/pull to/from
+a common image registry (e.g. Dockerhub).  If you build on the zCX appliance where
+the containers will be running, everything is ready to go.
+
+All of these containers will communicate with each other using a common Docker
+network.  First, create this network, which we'll call ```monitoring```.
+
+```
+docker network create monitoring
+```
+
+**Start Prometheus**
+
+```
+docker run --name prometheus --network monitoring -p 9090:9090 -d prometheus
+```
+
+**Start cAdvisor**
+
+```
+docker run -v /:/rootfs:ro -v /var/run:/var/run:ro -v /sys:/sys:ro -v /var/lib/docker/:/var/lib/docker:ro -v /dev/disk/:/dev/disk:ro -p 8080:8080 -d –network monitoring --name=cadvisor cadvisor
+```
+
+**Start node_exporter**
+
+```
+docker run --name nodeexporter -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v /:/rootfs:ro -v /etc/hostname:/etc/host_hostname:ro -p 9100:9100 -d --network monitoring nodeexporter
+```
+
+**Start Grafana**
+
+```
+docker run --name grafana --network monitoring -p 3000:3000 -d grafana
+```
+
 
 ## Use the Grafana Web Interface
 

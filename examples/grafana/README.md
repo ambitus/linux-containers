@@ -39,6 +39,7 @@ zCX appliance, or a Linux on Z system with access to the internet.
 | cAdvisor image size | ~550 MB |
 | Grafana image size | ~1.25 GB |
 | Total footprint | ~2.4 GB |
+|-----------------|---------|
 
 **Build Prometheus**
 Prometheus collects metrics based on end points defined in a configuration file

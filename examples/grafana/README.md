@@ -155,7 +155,10 @@ docker run --name nodeexporter -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v /:
 docker run --name grafana --network monitoring -p 3000:3000 -d grafana
 ```
 
-
 ## Use the Grafana Web Interface
+Once all of the containers are running, open a web browser, and navigate
+to ```<appliance_ip>:3000```.  You will be presented with a login page, where you
+need to set the password for a user the first time you log in.
 
-- ```coming soon```
+At this point, you can use the interface as outlined at the Grafana project site
+[https://grafana.com/](https://grafana.com/).

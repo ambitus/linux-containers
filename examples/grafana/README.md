@@ -112,10 +112,11 @@ When the build is complete, you should see:
 
 The version number may be different than ```latest```.
 
-**Survey Your Imags**
-Now run ```docker images``` from the command line to verify that all 4 of the images
-you have built exist.  The sizes of these images should roughly match the values in
-the image attributes table above.
+**Survey Your Images**
+
+Now run ```docker images``` from the command line to verify the existence of all 4
+images you have just built.  The sizes of these images should roughly match the
+values in the image attributes table above.
 
 ## Run the Containers
 Once the containers have been built, they are ready to run.  If you have created
@@ -140,13 +141,17 @@ docker run --name prometheus --network monitoring -p 9090:9090 -d prometheus
 **Start cAdvisor**
 
 ```
-docker run -v /:/rootfs:ro -v /var/run:/var/run:ro -v /sys:/sys:ro -v /var/lib/docker/:/var/lib/docker:ro -v /dev/disk/:/dev/disk:ro -p 8080:8080 -d –network monitoring --name=cadvisor cadvisor
+docker run -v /:/rootfs:ro -v /var/run:/var/run:ro -v /sys:/sys:ro \
+-v /var/lib/docker/:/var/lib/docker:ro -v /dev/disk/:/dev/disk:ro \
+-p 8080:8080 -d --network monitoring --name=cadvisor cadvisor
 ```
 
 **Start node_exporter**
 
 ```
-docker run --name nodeexporter -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v /:/rootfs:ro -v /etc/hostname:/etc/host_hostname:ro -p 9100:9100 -d --network monitoring nodeexporter
+docker run --name nodeexporter -v /proc:/host/proc:ro -v /sys:/host/sys:ro \
+-v /:/rootfs:ro -v /etc/hostname:/etc/host_hostname:ro -p 9100:9100 -d \
+--network monitoring nodeexporter
 ```
 
 **Start Grafana**

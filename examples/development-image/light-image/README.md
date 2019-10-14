@@ -12,7 +12,7 @@ The Dockerfile provided here can be used to create the dev-image-light that cont
 ## Building the dev-image-light
 In your zCX instance terminal, navigate to the `linux-containers/examples/development-image/dev-light` directory and issue the following command:
 
-`docker build dev-light/ --tag dev-image-light`
+`docker build . --tag dev-image-light`
 
 ## Running the dev-image-light
 Default run command:

@@ -33,7 +33,6 @@ RUN add-apt-repository \
 
 ENV DOCKER_VERSION=18.06.0
 RUN apt-get --assume-yes install docker-ce=${DOCKER_VERSION}~ce~3-0~ubuntu
-
 ####################################
 # Install Ant
 ####################################
@@ -59,11 +58,11 @@ RUN update-alternatives --install "/usr/bin/ant" "ant" "/opt/ant/bin/ant" 1 && \
 ####################################
 # Install Java
 ####################################
-ENV JAVA_VERSION 1.8.0_sr6fp7
+ENV JAVA_VERSION 1.8.0_sr6fp10
 
 RUN set -eux; \
     ARCH="s390x"; \
-    ESUM='a9b9d0bd2ee86fa8a51733da49ade862e9b83e6812463307743bd5de75236636'; \
+    ESUM='85685deb69e377e63a26c33fe913dd206d70d1b40a25f44ac991abfe45a35dc2'; \
     YML_FILE='sdk/linux/s390x/index.yml'; \
     BASE_URL="https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/meta/"; \
     wget -q -U UA_IBM_JAVA_Docker -O /tmp/index.yml ${BASE_URL}/${YML_FILE}; \
@@ -98,13 +97,13 @@ ENV MAVEN_HOME /usr/share/maven
 ####################################
 # Install Go
 ####################################
-ENV GOLANG_VERSION 1.13.10
+ENV GOLANG_VERSION 1.13.12
 
 RUN set -eux; \
 	dpkgArch="s390x"; \
 	case "${dpkgArch##*-}" in \
-		s390x) goRelArch='linux-s390x'; goRelSha256='41cb67266e809920363ff620e8cabce152ab54bebd6a337e9f903f5c1996ec35' ;; \
-		*) goRelArch='src'; goRelSha256='eb9ccc8bf59ed068e7eff73e154e4f5ee7eec0a47a610fb864e3332a2fdc8b8c'; \
+		s390x) goRelArch='linux-s390x'; goRelSha256='8dd2d50666176cbe5cab7557081acb0f380cef2240e18d05db7faffc03d8f356' ;; \
+		*) goRelArch='src'; goRelSha256='17ba2c4de4d78793a21cc659d9907f4356cd9c8de8b7d0899cdedcef712eba34'; \
 			echo >&2; echo >&2 "warning: current architecture ($dpkgArch) does not have a corresponding Go binary release; will be building from source"; echo >&2 ;; \
 	esac; \
 	\
@@ -187,7 +186,7 @@ RUN cd /usr/local/bin \
 # Install Pip
 ####################################
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 20.0.2
+ENV PYTHON_PIP_VERSION 20.1.1
 
 RUN set -ex; \
 	\
@@ -213,9 +212,9 @@ RUN set -ex; \
 CMD ["gradle"]
 
 ENV GRADLE_HOME /opt/gradle
-ENV GRADLE_VERSION 6.3
+ENV GRADLE_VERSION 6.5
 
-ARG GRADLE_DOWNLOAD_SHA256=038794feef1f4745c6347107b6726279d1c824f3fc634b60f86ace1e9fbd1768
+ARG GRADLE_DOWNLOAD_SHA256=23e7d37e9bb4f8dabb8a3ea7fdee9dd0428b9b1a71d298aefd65b11dccea220f
 RUN set -o errexit -o nounset \
     && echo "Downloading Gradle" \
     && wget --no-verbose --output-document=gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \

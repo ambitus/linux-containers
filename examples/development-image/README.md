@@ -35,10 +35,10 @@ Applications contained within:
 | curl | Latest in Ubuntu 18.04 | - |
 | gcc | 8.3 | https://github.com/docker-library/gcc |
 | Ant | 1.10.3 | https://github.com/frekele/docker-ant |
-| IBMJava | 1.8.0_sr5fp41 | https://github.com/ibmruntimes/ci.docker/tree/master/ibmjava |
+| IBMJava | 1.8.0_sr6fp10 | https://github.com/ibmruntimes/ci.docker/tree/master/ibmjava |
 | Maven | 3.6.0 | https://github.com/ibmruntimes/ci.docker/tree/master/ibmjava |
-| Go | 1.13.1 | https://github.com/docker-library/golang |
-| Gradle | 5.6.2 | https://github.com/keeganwitt/docker-gradle |
+| Go | 1.13.12 | https://github.com/docker-library/golang |
+| Gradle | 6.5 | https://github.com/keeganwitt/docker-gradle |
 | Python | 3.7 | https://github.com/docker-library/python |
 
 

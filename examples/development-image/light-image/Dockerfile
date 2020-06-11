@@ -5,7 +5,7 @@ FROM docker.io/s390x/ubuntu
 ####################################
 # Dependencies for all packages
 ENV APT_DEPENDENCIES="tar libffi-dev vim tk-dev software-properties-common curl git make gnupg2 g++ netbase dpkg-dev flex unzip openssh-server libssl-dev libc6-dev ca-certificates wget dirmngr autoconf apt-transport-https uuid-dev libexpat1-dev gnupg zlib1g-dev pkg-config gcc"
- 
+
 # Disable prompt for tzdata package, install required dependences, create dev user and group, create keyserver helper script
 RUN export DEBIAN_FRONTEND=noninteractive \
     && export DEBCONF_NONINTERACTIVE_SEEN=true \
@@ -33,7 +33,6 @@ RUN add-apt-repository \
 
 ENV DOCKER_VERSION=18.06.0
 RUN apt-get --assume-yes install docker-ce=${DOCKER_VERSION}~ce~3-0~ubuntu
-
 ####################################
 # Install Ant
 ####################################
@@ -59,11 +58,11 @@ RUN update-alternatives --install "/usr/bin/ant" "ant" "/opt/ant/bin/ant" 1 && \
 ####################################
 # Install Java
 ####################################
-ENV JAVA_VERSION 1.8.0_sr5fp41
+ENV JAVA_VERSION 1.8.0_sr6fp10
 
 RUN set -eux; \
     ARCH="s390x"; \
-    ESUM='cd99fbfc86e3236d0de885890652ce0f5b7e4194a157aff6c8619b600fe0a934'; \
+    ESUM='85685deb69e377e63a26c33fe913dd206d70d1b40a25f44ac991abfe45a35dc2'; \
     YML_FILE='sdk/linux/s390x/index.yml'; \
     BASE_URL="https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/meta/"; \
     wget -q -U UA_IBM_JAVA_Docker -O /tmp/index.yml ${BASE_URL}/${YML_FILE}; \
@@ -98,13 +97,13 @@ ENV MAVEN_HOME /usr/share/maven
 ####################################
 # Install Go
 ####################################
-ENV GOLANG_VERSION 1.13.1
+ENV GOLANG_VERSION 1.13.12
 
 RUN set -eux; \
 	dpkgArch="s390x"; \
 	case "${dpkgArch##*-}" in \
-		s390x) goRelArch='linux-s390x'; goRelSha256='5f0859ae1037ad7af6cdb6d16f638de908fd9de044d463eeab92b9578d4c7c75' ;; \
-		*) goRelArch='src'; goRelSha256='81f154e69544b9fa92b1475ff5f11e64270260d46e7e36c34aafc8bc96209358'; \
+		s390x) goRelArch='linux-s390x'; goRelSha256='8dd2d50666176cbe5cab7557081acb0f380cef2240e18d05db7faffc03d8f356' ;; \
+		*) goRelArch='src'; goRelSha256='17ba2c4de4d78793a21cc659d9907f4356cd9c8de8b7d0899cdedcef712eba34'; \
 			echo >&2; echo >&2 "warning: current architecture ($dpkgArch) does not have a corresponding Go binary release; will be building from source"; echo >&2 ;; \
 	esac; \
 	\
@@ -140,7 +139,7 @@ ENV PATH /usr/local/bin:$PATH
 ENV LANG C.UTF-8
 
 ENV GPG_KEYS 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ENV PYTHON_VERSION 3.7.4
+ENV PYTHON_VERSION 3.7.7
 
 RUN set -ex \
 	&& wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
@@ -187,7 +186,7 @@ RUN cd /usr/local/bin \
 # Install Pip
 ####################################
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 19.2.3
+ENV PYTHON_PIP_VERSION 20.1.1
 
 RUN set -ex; \
 	\
@@ -213,9 +212,9 @@ RUN set -ex; \
 CMD ["gradle"]
 
 ENV GRADLE_HOME /opt/gradle
-ENV GRADLE_VERSION 5.6.2
+ENV GRADLE_VERSION 6.5
 
-ARG GRADLE_DOWNLOAD_SHA256=32fce6628848f799b0ad3205ae8db67d0d828c10ffe62b748a7c0d9f4a5d9ee0
+ARG GRADLE_DOWNLOAD_SHA256=23e7d37e9bb4f8dabb8a3ea7fdee9dd0428b9b1a71d298aefd65b11dccea220f
 RUN set -o errexit -o nounset \
     && echo "Downloading Gradle" \
     && wget --no-verbose --output-document=gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \

@@ -1,4 +1,4 @@
-FROM docker.io/s390x/ubuntu
+FROM docker.io/s390x/ubuntu:bionic
 
 ####################################
 # Setup

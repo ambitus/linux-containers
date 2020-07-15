@@ -11,13 +11,13 @@ The exploration and results were achieved within 1 working day, over the course 
 
 ## What is “express-gateway”?
 
-From https://hub.docker.com/_/express-gateway
-
-> Express Gateway is an API Gateway that sits at the heart of any microservices architecture, regardless of what language or platform you're using. Express Gateway secures your microservices and exposes them through APIs using Node.js, ExpressJS and Express middleware. Developing microservices, orchestrating and managing them now can be done insanely fast all on one seamless platform without having to introduce additional infrastructure.
-
 From: https://www.express-gateway.io/about/#what-exactly-is-express-gateway
 
 > Express Gateway is a bunch of components which declaratively build around Express to meet the API Gateway use case. Express Gateway’s power is harnessed the rich ecosystem around Express middleware.
+
+From https://hub.docker.com/_/express-gateway
+
+> Express Gateway is an API Gateway that sits at the heart of any microservices architecture, regardless of what language or platform you're using. Express Gateway secures your microservices and exposes them through APIs using Node.js, ExpressJS and Express middleware. Developing microservices, orchestrating and managing them now can be done insanely fast all on one seamless platform without having to introduce additional infrastructure.
 
 express-gateway is freely available from docker hub and supports the IBM Z architecture:
 

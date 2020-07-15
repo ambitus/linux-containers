@@ -1,9 +1,7 @@
 # express-gateway
 ## Running express-gateway on ZCX as an API gateway for z/OS Connect EE
 
-This document is based upon my experience of attempting to use of the “5-minute Getting Started Guide” from the express gateway website with the IBM z/OS 2.4 feature, z/OS Connect Extensions (ZCX): 
-
-https://www.express-gateway.io/getting-started
+This material is based upon an experience of following the [“5-minute Getting Started Guide”](https://www.express-gateway.io/getting-started "Getting started with Express Gateway") from the express gateway website together with the IBM z/OS 2.4 feature, [z/OS Connect Extensions](https://www.ibm.com/support/knowledgecenter/SSLTBW_2.4.0/com.ibm.zos.v2r4.izso100/abstract.htm "z/OS Container Extensions documentation") (ZCX). 
 
 The idea was to show how feasible it is to pull down an "off-the-peg" middleware component into ZCX, follow the available tutorial, and then extend this to prove interoperability with an existing z/OS application via z/OS Connect Enterprise Edition. “express-gateway” was selected because it was relevant, and already available for the IBM Z architecture as a Docker Official image with a substantial download statistics, demonstrating its popularity. 
 

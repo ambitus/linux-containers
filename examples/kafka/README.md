@@ -48,20 +48,18 @@ run in the same zCX appliance for this use case, but either could be located on 
 platform.
 
 In order to run this use case, please open 2 shell sessions via ssh into your appliance,
-and sftp the test text file (sonnet-XVIII.txt) to the same directory where you have your
-Dockerfile
+and sftp the test text file ('''sonnet-XVIII.txt''') to the same directory where you
+have your Dockerfile
 
 - _**Producer**_ - Create a topic
 
 ```
 ~/apache_kafka$ docker exec apache_kafka bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic simple-test-topic
-Created topic simple-test-topic.
 ```
 - _**Producer**_ - List all topics
 
 ```
 ~/apache_kafka$ docker exec apache_kafka bin/kafka-topics.sh --list --bootstrap-server localhost:9092
-simple-test-topic
 ```
 
 - _**Producer**_ - Send some messages

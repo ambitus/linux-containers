@@ -177,36 +177,41 @@ The basic configuration provided in the tutorial defines an API (called “api�
 
 ![testing basic config of express-gateway with a browser](images/browser-check-ip.png)
 
-The tutorial walks you toward the creation of a gateway configuration file, although it doesn’t provide a “complete” version. Here is the one I ended up with: 
+The tutorial walks you toward the creation of a gateway configuration file, although it doesn’t provide a “complete” working version. The express gateway configuration file is stored under path '/var/lib/eg' as file 'gateway.config.yml'. The following initial example adds a definition for an API called 'api' under the path '/ip', and a service endpoint for the external 'http.org' public service '/ip', which reports back some simple information about the originating caller. Finally, the pipelines section links the 'api' endpoint with the service endpoint.   
 
 ### /var/lib/eg/gateway.config.yml
 ```
-http:                                                                                                                                                                    
-    port: 8080                                                                                                                                                           
-admin:                                                                                                                                                                   
-    port: 9876                                                                                                                                                           
-    host: localhost                                                                                                                                                      
-apiEndpoints:                                                                                                                                                            
-    api:                                                                                                                                                                 
-        host: localhost                                                                                                                                                  
-        paths: /ip                                                                                                                                                       
+http:
+    port: 8080
+      
+admin:      
+    port: 9876   
+    host: localhost
+
+apiEndpoints:
+    api:
+        host: localhost
+        paths: /ip
+
 serviceEndpoints:                                                                                                                                                        
-    httpbin:                                                                                                                                                             
-        url: 'https://httpbin.org'                                                                                                                                       
-policies:                                                                                                                                                                
-    - basic-auth                                                                                                                                                         
-    - cors                                                                                                                                                               
-    - expression                                                                                                                                                         
-    - key-auth                                                                                                                                                           
-    - log                                                                                                                                                                
-    - oauth2                                                                                                                                                             
-    - proxy                                                                                                                                                              
-    - rate-limit                                                                                                                                                         
-pipelines:                                                                                                                                                               
-    default:                                                                                                                                                             
-        apiEndpoints:                                                                                                                                                    
-            - api                                                                                                                                                        
-        policies:                                                                                                                                                        
+    httpbin:
+        url: 'https://httpbin.org'
+
+policies:
+    - basic-auth
+    - cors
+    - expression
+    - key-auth
+    - log          
+    - oauth2
+    - proxy
+    - rate-limit
+
+pipelines:
+    default:
+        apiEndpoints:
+            - api          
+        policies:                                                                  
             - {proxy: [{action: {serviceEndpoint: httpbin, changeOrigin: true}}]}
 ```
 
@@ -248,44 +253,51 @@ _Other https endpoint appear to return data normally – so it seems we just hit
 
 Changing the serviceEndpoint definition for `httpbin` to http://httpbin.org saved the day!
 
-## Modified express-gateway configuration for ZCX
-
-### /var/lib/eg/gateway.config.yml
-
+### Modified express-gateway configuration for ZCX
+Here is the updated gateway configuration file for the httpbin service, adapted for testing in ZCX:
 ```
-http:                                                                                                                                                                    
-    port: 8080                                                                                                                                                           
-admin:                                                                                                                                                                   
-    port: 9876                                                                                                                                                           
-    host: localhost                                                                                                                                                      
-apiEndpoints:                                                                                                                                                            
-    api:                                                                                                                                                                 
-        host: ‘*’                                                                                                                                                  
-        paths: /ip                                                                                                                                                       
-serviceEndpoints:                                                                                                                                                        
-    httpbin:                                                                                                                                                             
-        url: 'http://httpbin.org'                                                                                                                                       
-policies:                                                                                                                                                                
-    - basic-auth                                                                                                                                                         
-    - cors                                                                                                                                                               
-    - expression                                                                                                                                                         
-    - key-auth                                                                                                                                                           
-    - log                                                                                                                                                                
-    - oauth2                                                                                                                                                             
-    - proxy                                                                                                                                                              
-    - rate-limit                                                                                                                                                         
-pipelines:                                                                                                                                                               
-    default:                                                                                                                                                             
-        apiEndpoints:                                                                                                                                                    
-            - api                                                                                                                                                        
-        policies:                                                                                                                                                        
+http:
+    port: 8080
+
+admin:
+    port: 9876
+    host: localhost
+
+apiEndpoints:
+    api:
+        host: ‘*’
+        paths: /ip
+
+serviceEndpoints:
+    httpbin: 
+        url: 'http://httpbin.org'
+
+policies:
+    - basic-auth          
+    - cors
+    - expression
+    - key-auth
+    - log
+    - oauth2
+    - proxy
+    - rate-limit
+
+pipelines:
+    default:
+        apiEndpoints:
+            - api
+        policies:
             - {proxy: [{action: {serviceEndpoint: httpbin, changeOrigin: true}}]}
 ```
+This example gateway configuration file is available [here](examples/httpbin/gateway.config.yml).
+
 ![Successful test of the httpbin service](images/browser-test-success.png)
 
-## Basic express-gateway configuration
+## Adding a z/OS Connect Enterprise Edition API
 
-### /var/lib/eg/gateway.config.yml
+Following the pattern established from the 'httpbin' example, a second pipeline and associated definitions is added in the following gateway configuration file, allowing express gateway to act as a proxy for the 'policy' API. The 'policy' API is provider by a z/OS Connect EE server listeing on 'myzos.mycorp.com' port 10220, under base path 'policy'. *Note:* This is not to be confused with the 'policies' definitions of express gateway!  
+
+Here is the updated gateway configuration file, adding the z/OS Connect EE 'policy' API:
 
 ```
 http:
@@ -295,11 +307,9 @@ admin:
     host: localhost
 apiEndpoints:
     api:
-      #  host: localhost
         host: '*'
         paths: /ip
     policy_api:
-      #  host: localhost
         host: '*'
         paths: '/policy/*'
 
@@ -329,6 +339,7 @@ pipelines:
         policies:                                                                
             - {proxy: [{action: {serviceEndpoint: zceepolicy, changeOrigin: true}}]}   
 ```
+This example gateway configuration file is available [here](examples/zosconnect/gateway.config.yml).
 
 ## express-gateway (debug) log with z/OS Connect config
 ```
@@ -357,7 +368,7 @@ memory, and will not scale past a single process.
 ```
 ## Testing express-gateway with z/OS Connect config
 
-To see a “raw” response, point your browser at the express-gateway on ZCX:
+To see a “raw” response, point your browser at the express-gateway on ZCX, and request the OpenAPI description of the policy API from z/OS Connect EE:
 
 `http://<my-zcx-host>:4080/policy/api-docs`
 
@@ -368,6 +379,8 @@ Success!
 For a more polished experience, try importing the proxied z/OS Connect EE API docs for the policy API to the swagger.io editor:
 
 ![Importing the z/OS Connect EE API to swagger.io editor](images/browser-test-in-swagger-io.png)
+
+The swagger.io editor allows for simple testing of the 'policy' API, through the express gateway running in ZCX:
 
 ![Testing the z/OS Connect EE API using swagger.io editor](images/browser-test-in-swagger-io-2.png)
 
@@ -411,7 +424,7 @@ Configuring yargs through package.json is deprecated and will be removed in a fu
 }
 ```
 
-Modify the pipeline policy for the policy api:
+Modify the pipeline policy for the policy api to add the 'key-auth' attribute, to require an API key:
 
 ```
 pipelines:
@@ -479,7 +492,7 @@ Driving z/OS Connect EE at 15% CPU
 
 ## Workload generation using Apache Benchmark
 
-The following output shows use of Apache Benchmark (running on a Mac) to generate a workload of 200 concurrent clients, sending 100,000 requests. 
+The following output shows use of Apache Benchmark to generate a workload of 200 concurrent clients, sending 100,000 http GET requests to the z/OS Connect EE 'policy' API, via the express gateway running in ZCX. *Note:* The workload client and z/OS Connect EE server, were roundtripping with ZCX between continents, so the latency is not representative of a typical configuration!  
 
 ```
 >ab -c 200 -n 100000 -m GET -H "Authorization: apiKey 5w2FAr1yNZdqq3agNcdnjE:61Af99pZxhlMWJlxtQP6uY" 

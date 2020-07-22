@@ -1,0 +1,38 @@
+http:
+    port: 8080
+admin:
+    port: 9876
+    host: localhost
+apiEndpoints:
+    api:
+        host: '*'
+        paths: /ip
+    policy_api:
+        host: '*'
+        paths: '/policy/*'
+
+serviceEndpoints:
+    httpbin:
+        url: 'http://httpbin.org'
+    zceepolicy:
+        url: 'http://myzos.mycorp.com:10220'
+policies:
+    - basic-auth
+    - cors
+    - expression
+    - key-auth
+    - log
+    - oauth2
+    - proxy
+    - rate-limit
+pipelines:
+    default:
+        apiEndpoints:
+            - api
+        policies:
+            - {proxy: [{action: {serviceEndpoint: httpbin, changeOrigin: true}}]}
+    zosconnect:
+        apiEndpoints:
+            - policy_api
+        policies:
+            - {proxy: [{action: {serviceEndpoint: zceepolicy, changeOrigin: true}}]}

@@ -152,7 +152,7 @@ Start the busybox container, attaching the same volume used by the express-gatew
 
 Dipping in and out of this work meant the SSH session to ZCX would timeout, meaning that the shell resulting from the above docker run command was lost. Start a new shell using the docker exec command shown below. 
 
-*Note:* busybox does not have bash shell, so specify sh as the shell to run:
+**Note:** busybox does not have bash shell, so specify sh as the shell to run:
 
 ```
 >docker exec -it <container id> sh
@@ -295,7 +295,7 @@ This example gateway configuration file is available [here](examples/httpbin/gat
 
 ## Adding a z/OS Connect Enterprise Edition API
 
-Following the pattern established from the 'httpbin' example, a second pipeline and associated definitions is added in the following gateway configuration file, allowing express gateway to act as a proxy for the 'policy' API. The 'policy' API is provider by a z/OS Connect EE server listeing on 'myzos.mycorp.com' port 10220, under base path 'policy'. *Note:* This is not to be confused with the 'policies' definitions of express gateway!  
+Following the pattern established from the 'httpbin' example, a second pipeline and associated definitions is added in the following gateway configuration file, allowing express gateway to act as a proxy for the 'policy' API. The 'policy' API is provider by a z/OS Connect EE server listeing on 'myzos.mycorp.com' port 10220, under base path 'policy'. **Note:** This is not to be confused with the 'policies' definitions of express gateway!  
 
 Here is the updated gateway configuration file, adding the z/OS Connect EE 'policy' API:
 
@@ -492,7 +492,7 @@ Driving z/OS Connect EE at 15% CPU
 
 ## Workload generation using Apache Benchmark
 
-The following output shows use of Apache Benchmark to generate a workload of 200 concurrent clients, sending 100,000 http GET requests to the z/OS Connect EE 'policy' API, via the express gateway running in ZCX. *Note:* The workload client and z/OS Connect EE server, were roundtripping with ZCX between continents, so the latency is not representative of a typical configuration!  
+The following output shows use of Apache Benchmark to generate a workload of 200 concurrent clients, sending 100,000 http GET requests to the z/OS Connect EE 'policy' API, via the express gateway running in ZCX. **Note:** The workload client and z/OS Connect EE server, were roundtripping with ZCX between continents, so the latency is not representative of a typical configuration!  
 
 ```
 >ab -c 200 -n 100000 -m GET -H "Authorization: apiKey 5w2FAr1yNZdqq3agNcdnjE:61Af99pZxhlMWJlxtQP6uY" 

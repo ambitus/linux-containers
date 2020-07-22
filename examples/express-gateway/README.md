@@ -1,7 +1,8 @@
 # express-gateway
-## Running express-gateway on ZCX as an API gateway for z/OS Connect EE
 
 This material is based upon an experience of following the [“5-minute Getting Started Guide”](https://www.express-gateway.io/getting-started "Getting started with Express Gateway") from the express gateway website together with the IBM z/OS 2.4 feature, [z/OS Connect Extensions](https://www.ibm.com/support/knowledgecenter/SSLTBW_2.4.0/com.ibm.zos.v2r4.izso100/abstract.htm "z/OS Container Extensions documentation") (ZCX). 
+
+## Running express-gateway on ZCX as an API gateway for z/OS Connect EE
 
 The idea was to show how feasible it is to pull down an "off-the-peg" middleware component into ZCX, follow the available tutorial, and then extend this to prove interoperability with an existing z/OS application via z/OS Connect Enterprise Edition. “express-gateway” was selected because it was relevant, and already available for the IBM Z architecture as a Docker Official image with a substantial download statistics, demonstrating its popularity. 
 
@@ -9,7 +10,24 @@ The idea was to show how feasible it is to pull down an "off-the-peg" middleware
 
 The exploration and results were achieved within 1 working day, over the course of approximately 3-4 hours, and in-between meetings. This seemingly frivolous detail is meant to highlight the simplicity of using container-based offerings, and ZCX, despite having no previous awareness of express-gateway, only limited experience with docker CLI, but extensive experience with the z/OS platform. 
 
-## What is “express-gateway”?
+## Contents
+
+- [What is Express Gateway?](#what-is-express-gateway) 
+- [Get started](#get-started)
+  * [Installation of Express Gateway](#installation-of-express-gateway)
+  * [Create a docker volume and why](#create-a-docker-volume-and-why)
+- [Iterative testing, debugging and editing the configuration](#iterative-testing-debugging-and-editing-the-configuration)
+  * [Start Express Gateway](#start-express-gateway)
+  * [Basic Express Gateway configuration](#basic-express-gateway-configuration)
+  * [First issues encountered with Express Gateway under ZCX](#first-issues-encountered-with-express-gateway-under-zcx)
+- [Adding a z/OS Connect Enterprise Edition API](#adding-a-zos-connect-enterprise-edition-api)
+  * [Express Gateway debug log with z/OS Connect config](#express-gateway-debug-log-with-zos-connect-config)
+  * [Testing Express Gateway with z/OS Connect config](#testing-express-gateway-with-zos-connect-config)
+- [Securing an API pipeline with API keys](#securing-an-api-pipeline-with-api-keys)
+- [Express Gateway resource usage and scalability test](#express-gateway-resource-usage-and-scalability-test)
+  * [Workload generation using Apache Benchmark](#workload-generation-using-apache-benchmark)
+
+## What is Express Gateway?
 
 From: https://www.express-gateway.io/about/#what-exactly-is-express-gateway
 
@@ -19,11 +37,11 @@ From https://hub.docker.com/_/express-gateway
 
 > Express Gateway is an API Gateway that sits at the heart of any microservices architecture, regardless of what language or platform you're using. Express Gateway secures your microservices and exposes them through APIs using Node.js, ExpressJS and Express middleware. Developing microservices, orchestrating and managing them now can be done insanely fast all on one seamless platform without having to introduce additional infrastructure.
 
-express-gateway is freely available from docker hub and supports the IBM Z architecture:
+'express-gateway' is the name of the container image that is freely available from docker hub, and supports the IBM Z architecture:
 
 ![express-gateway in the Docker Official Images registry](images/express-gateway-on-dockerhub.png)
 
-## Get started: Login to ZCX
+## Get started
 
 Start off by logging into the ZCX appliance using your 'ssh' client of choice:
 
@@ -35,9 +53,9 @@ For more information on how to use this shell to execute Docker commands refer t
 Last login: Tue Feb 18 10:24:34 2020 from <my-client-IP>
 ```
 
-## Installation of express-gateway
+### Installation of Express Gateway
 
-Since this exercise uses the containerised version of express-gateway, it does not follow the first part of the express gateway tutorial on installation. Instead, after logging into docker hub using the docker login command, follow the usual process of using the 'docker pull' command to obtain the 'express-gateway' image:
+Since this exercise uses the containerised version of Express Gateway, it skips the first part of the tutorial on installation. Instead, after logging into docker hub using the docker login command, follow the usual process of using the 'docker pull' command to obtain the 'express-gateway' image:
 
 ```
 >docker pull express-gateway
@@ -53,8 +71,8 @@ Digest: sha256:a1bf18d2b7534cf47dee6c096cfab9e5119c0e9a5864223771ad32ab6eeaf506
 Status: Downloaded newer image for express-gateway:latest
 ```
 
-## Create a docker volume (once only) and why
-The first issue to surace when trying to follow the express-gateway tutorial under ZCX, rather than a regular docker runtime, was related to the mounting of persistent storage on the filesystem. This is used to store configuration and miscellanrous files required for express-gateway to run, and to persist between runs in isolation from the express-gateway docker image. This pattern suits the purposes of this investigation, as iterative changes are made to the express gateway configuration. 
+### Create a docker volume and why
+The first issue to surace when trying to follow the express-gateway tutorial under ZCX, rather than a regular docker runtime, was related to the mounting of persistent storage on the filesystem. This is used to store configuration and miscellaneous files required for express-gateway to run, and to persist between runs in isolation from the express-gateway docker image. This pattern suits the purposes of this investigation, as iterative changes are made to the express gateway configuration. 
 
 After creating a local directory datadir in my “sandbox” for express-gateway, the following 'docker run' command is used, based upon the example in the tutorial.
 
@@ -93,7 +111,7 @@ Ok that was easy. The 'docker run' parameters to start express-gateway need to b
 >docker run -d --name express-gateway -v exgvol:/var/lib/eg:rw -p 8080:8080 -p 9876:9876 express-gateway
 ```
 
-## Iterative testing, debugging and editing the express gateway configuration 
+## Iterative testing, debugging and editing the configuration 
 
 At this point it should be possible to start express-gateway under ZCX, review the logs using the 'docker logs' command, and start the configuration process by editing the express-gateway configuration file, '/var/lib/eg/gateway.config.yml'. 
 
@@ -159,7 +177,7 @@ Dipping in and out of this work meant the SSH session to ZCX would timeout, mean
 >docker exec -it <container id> sh
 ```
 
-## Start express-gateway
+### Start Express Gateway
 
 ```
 >docker run -d --name express-gateway -v exgvol:/var/lib/eg:rw -p 4080:8080 -p 5876:9876 express-gateway
@@ -171,16 +189,15 @@ To start express-gateway with debug logging active, specify the environment vari
 >docker run -d -e LOG_LEVEL=debug --name express-gateway -v exgvol:/var/lib/eg:rw -p 4080:8080 -p 5876:9876 express-gateway
 ```
 
-## Basic express-gateway configuration
+### Basic Express Gateway configuration
 Here we begin to follow the express-gateway tutorial, “5-minute Getting Started Guide”, Part 1 “Specify a microservice and expose as an API”.
 
 The basic configuration provided in the tutorial defines an API (called “api”) with a single path value “/ip”, which uses a public REST API from httpbin.org to simply return a JSON payload containing the callers’ IP address. You can try this from a browser, or CLI commands such as curl or wget:
 
 ![testing basic config of express-gateway with a browser](images/browser-check-ip.png)
 
-The tutorial walks you toward the creation of a gateway configuration file, although it doesn’t provide a “complete” working version. The express gateway configuration file is stored under path '/var/lib/eg' as file 'gateway.config.yml'. The following initial example adds a definition for an API called 'api' under the path '/ip', and a service endpoint for the external 'http.org' public service '/ip', which reports back some simple information about the originating caller. Finally, the pipelines section links the 'api' endpoint with the service endpoint.   
+The tutorial walks you toward the creation of a gateway configuration file, '/var/lib/eg/gateway.config.yml', although it doesn’t provide a “complete” working version. The express gateway configuration file is stored under path '/var/lib/eg' as file 'gateway.config.yml'. The following initial example adds a definition for an API called 'api' under the path '/ip', and a service endpoint for the external 'http.org' public service '/ip', which reports back some simple information about the originating caller. Finally, the pipelines section links the 'api' endpoint with the service endpoint.   
 
-### /var/lib/eg/gateway.config.yml
 ```
 http:
     port: 8080
@@ -216,7 +233,7 @@ pipelines:
             - {proxy: [{action: {serviceEndpoint: httpbin, changeOrigin: true}}]}
 ```
 
-## First errors encountered with express-gateway
+### First issues encountered with Express Gateway under ZCX
 
 Testing the basic express-gateway configuration for the httpbin service proved straight forward when using a local workstation docker. However, running under ZCX consistently resulted in the “Cannot GET /ip” error:
 
@@ -254,7 +271,7 @@ _Other https endpoint appear to return data normally – so it seems we just hit
 
 Changing the serviceEndpoint definition for `httpbin` to http://httpbin.org saved the day!
 
-### Modified express-gateway configuration for ZCX
+### Modified Express Gateway configuration for ZCX
 Here is the updated gateway configuration file for the httpbin service, adapted for testing in ZCX:
 ```
 http:
@@ -342,7 +359,7 @@ pipelines:
 ```
 This example gateway configuration file is available [here](examples/zosconnect/gateway.config.yml).
 
-## express-gateway (debug) log with z/OS Connect config
+### Express Gateway debug log with z/OS Connect config
 ```
 2020-02-18T17:25:11.266Z [EG:config] info: change event on /var/lib/eg/gateway.config.yml file. Reloading gateway config file
 2020-02-18T17:25:11.267Z [EG:config] debug: ConfigPath: /var/lib/eg/gateway.config.yml
@@ -367,7 +384,7 @@ memory, and will not scale past a single process.
 2020-02-18T17:25:11.272Z [EG:gateway] info: hot-reload config completed
 2020-02-18T17:26:07.153Z [EG:policy] debug: proxying to http://myzos.mycorp.com:10220/, GET /policy/api-docs
 ```
-## Testing express-gateway with z/OS Connect config
+### Testing Express Gateway with z/OS Connect config
 
 To see a “raw” response, point your browser at the express-gateway on ZCX, and request the OpenAPI description of the policy API from z/OS Connect EE:
 
@@ -461,7 +478,7 @@ But when including the api key and secret pair via an Authorization header:
 (output truncated)
 ```
 
-## express-gateway resource usage and scalability test
+## Express Gateway resource usage and scalability test
 One of the inevitable questions that is asked about off-the-peg open source solutions, such as express-gateway, and of new technologies such as ZCX, is “does it scale?”. Here, a very crude workload test attempts to show how a single container instance of express-gateway performs under a homogeneous workload. 
 
 In this test, the workload driver is a laptop on my desk in Hursley (UK), express-gateway is running on a ZCX appliance in Poughkeepsie (USA), and z/OS Connect EE is running in Hursley (UK), and so latency is relatively high! However, the results show a relatively small increase in virtual memory usage within the express-gateway container, and a not inconsiderable request rate when simulating up-to 200 concurrent clients. 
@@ -491,9 +508,9 @@ Driving z/OS Connect EE at 15% CPU
 
 ![SDSF showing resource consumption of z/OS Connect EE underworkload](images/SDSF-zosconnect-CPU-usage.png)
 
-## Workload generation using Apache Benchmark
+### Workload generation using Apache Benchmark
 
-The following output shows use of Apache Benchmark to generate a workload of 200 concurrent clients, sending 100,000 http GET requests to the z/OS Connect EE 'policy' API, via the express gateway running in ZCX. **Note:** The workload client and z/OS Connect EE server, were roundtripping with ZCX between continents, so the latency is not representative of a typical configuration!  
+The following output shows use of Apache Benchmark ('ab') to generate a workload of 200 concurrent clients, sending 100,000 http GET requests to the z/OS Connect EE 'policy' API, via the express gateway running in ZCX. **Note:** The workload client and z/OS Connect EE server, were roundtripping with ZCX between continents, so the latency is not representative of a typical configuration!  
 
 ```
 >ab -c 200 -n 100000 -m GET -H "Authorization: apiKey 5w2FAr1yNZdqq3agNcdnjE:61Af99pZxhlMWJlxtQP6uY" 

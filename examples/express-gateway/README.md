@@ -7,7 +7,7 @@ The idea was to show how feasible it is to pull down an "off-the-peg" middleware
 
 ![Exposing a z/OS API via a ZCX-based API gateway](images/architecture_overview.png)
 
-The exploration and results were achieved within 1 working day, over the course of approximately 3-4 hours, and in-between meetings. This seemingly frivolous detail is meant to highlight the simplicity of using container-based offerings, and ZCX, despite the fact that I had no previous awareness of express-gateway, only limited experience with docker CLI, but extensive experience with the z/OS platform. 
+The exploration and results were achieved within 1 working day, over the course of approximately 3-4 hours, and in-between meetings. This seemingly frivolous detail is meant to highlight the simplicity of using container-based offerings, and ZCX, despite having no previous awareness of express-gateway, only limited experience with docker CLI, but extensive experience with the z/OS platform. 
 
 ## What is “express-gateway”?
 
@@ -25,7 +25,7 @@ express-gateway is freely available from docker hub and supports the IBM Z archi
 
 ## Get started: Login to ZCX
 
-Start off by logging into your ZCX appliance using SSH, as usual:
+Start off by logging into the ZCX appliance using your 'ssh' client of choice:
 
 ```
 >ssh rcjones@<my-zcx-host> -p <zcx-port>
@@ -37,7 +37,7 @@ Last login: Tue Feb 18 10:24:34 2020 from <my-client-IP>
 
 ## Installation of express-gateway
 
-Since we are going to use the containerised version of express-gateway, we don’t follow the first part of their tutorial on installation. Instead, after logging into docker hub using the docker login command, I followed the usual process of using the docker pull command to obtain the express-gateway image:
+Since this exercise uses the containerised version of express-gateway, it does not follow the first part of the express gateway tutorial on installation. Instead, after logging into docker hub using the docker login command, follow the usual process of using the 'docker pull' command to obtain the 'express-gateway' image:
 
 ```
 >docker pull express-gateway
@@ -54,9 +54,9 @@ Status: Downloaded newer image for express-gateway:latest
 ```
 
 ## Create a docker volume (once only) and why
-The first issue I hit trying to follow the express-gateway tutorial using ZCX rather than regular docker, was related to the mounting of persistent storage on the filesystem. This is required to store configuration and other files required for express-gateway to run, and to stay around between runs in isolation from the express-gateway docker image.
+The first issue to surace when trying to follow the express-gateway tutorial under ZCX, rather than a regular docker runtime, was related to the mounting of persistent storage on the filesystem. This is used to store configuration and miscellanrous files required for express-gateway to run, and to persist between runs in isolation from the express-gateway docker image. This pattern suits the purposes of this investigation, as iterative changes are made to the express gateway configuration. 
 
-After creating a local directory datadir in my “sandbox” for express-gateway, I issued the docker run command, based upon the example in the tutorial.
+After creating a local directory datadir in my “sandbox” for express-gateway, the following 'docker run' command is used, based upon the example in the tutorial.
 
 ```
 >docker run -d --name express-gateway --link eg-database:eg-database -v ~/docker-sandbox/express-gateway/datadir:/var/lib/eg -p 8080:8080 -p 9876:9876 express-gateway
@@ -69,13 +69,13 @@ docker: Error response from daemon: authorization denied by plugin zcxauthplugin
 See 'docker run --help'.
 ```
 
-After reading through various general guidance on docker and mounting of volumes, it appears that the preferred direction is to use docker volumes, rather than binding explicitly filesystem locations into the container filesystem. So, I created a new volume exgvol:
+After reading through various general guidance on docker and mounting of volumes, it appears that the preferred option is to use docker volumes, rather than binding explicitly filesystem locations into the container filesystem. So, the 'docker volume create' command is used to create the volume 'exgvol':
 
 ```
 >docker volume create exgvol
 ```
 
-..and checked the result using the docker volume command:
+The 'docker volume create' command completes without any confirmation of success. Check the result using the docker volume command:
 
 ```
 >docker volume ls
@@ -87,14 +87,15 @@ local               cf6f081a31358caac9c0c541580a5d8d0f7d93e5acc7b16b3537920cec29
 local               exgvol
 ```
 
-Ok that was easy. The docker run parameters needed to be tweaked slightly to specify the volume instead of the file system location, and make the area read/write:
+Ok that was easy. The 'docker run' parameters to start express-gateway need to be tweaked slightly to specify the volume to mount ('-v exgvol:/var/lib/eg') rather than the file system location, and to make the mounted volume read/write ('rw'):
 
 ```
 >docker run -d --name express-gateway -v exgvol:/var/lib/eg:rw -p 8080:8080 -p 9876:9876 express-gateway
 ```
 
-Start busy box with mounted volume
-At this point I was able to start the express-gateway, review the logs using the docker logs command, and start the configuration process by editing the express-gateway configuration file, /var/lib/eg/gateway.config.yml. 
+## Iterative testing, debugging and editing the express gateway configuration 
+
+At this point it should be possible to start express-gateway under ZCX, review the logs using the 'docker logs' command, and start the configuration process by editing the express-gateway configuration file, '/var/lib/eg/gateway.config.yml'. 
 
 ```
 >docker logs 63167e4397d1
@@ -110,7 +111,7 @@ memory, and will not scale past a single process.
 2020-02-18T10:51:02.304Z [EG:admin] info: admin http server listening on 127.0.0.1:9876
 ```
 
-However, this all fell down when I made a syntax error in the YAML configuration file. Thanks to express-gateway’s automatic reloading of the configuration, this cause the server to fail and the container stopped, taking my shell session with it. 
+However, this can all fall down due to a simple syntax error in the YAML configuration file! Thanks to express-gateway’s automatic reloading of the configuration, this caused the server to fail and the container stopped, taking the shell session (being used to edit the configuration file) with it: 
 
 ```
 >docker logs 7d8f544e23f100ba337e3343f086c4688029079438db8016f5501e7d82b393e0
@@ -131,7 +132,7 @@ Error: data.pipelines['example-pipeline'].policies should be array
     at Module.require (internal/modules/cjs/loader.js:692:17)
 ```
 
-I decided I needed a way to work on the configuration files independent of the express-gateway container, and so opted to install busybox – the same very small Linux base image used by express-gateway itself. _In retrospeect, a better choice would have been Ubuntu, as busybox only offers ‘sh’ and ‘vi’ as minimal tooling to get by with!_
+An alternative approach is required to work on the configuration file independent of the express-gateway container. Since the express-gateway image iteslf is based upon 'busybox', this was used for the minimal requirement of editing a text-based configuration file. _In retrospeect, a better choice might have been Ubuntu, as busybox only offers ‘sh’ and ‘vi’ as minimal tooling to get by with!_
 
 ```
 >docker pull busybox
@@ -148,7 +149,7 @@ Start the busybox container, attaching the same volume used by the express-gatew
 >docker run -it --name rob-busybox -v exgvol:/var/lib/eg:rw --rm busybox
 ```
 
-## Re-establishing a Busybox shell session
+### Re-establishing a Busybox shell session
 
 Dipping in and out of this work meant the SSH session to ZCX would timeout, meaning that the shell resulting from the above docker run command was lost. Start a new shell using the docker exec command shown below. 
 

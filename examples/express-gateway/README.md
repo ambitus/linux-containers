@@ -442,7 +442,7 @@ Configuring yargs through package.json is deprecated and will be removed in a fu
 }
 ```
 
-Modify the pipeline policy for the policy api to add the 'key-auth' attribute, to require an API key:
+Modify the pipeline policy for the policy API to add the 'key-auth' attribute, to require an API key:
 
 ```
 pipelines:
@@ -467,7 +467,7 @@ Show that the API is now secure, by issuing a GET request without an API key/sec
 Unauthorized
 ```
 
-But when including the api key and secret pair via an Authorization header:
+But when including the API key and secret pair via an Authorization header:
 
 ```
 >curl -G -H "Authorization: apiKey 5w2FAr1yNZdqq3agNcdnjE:61Af99pZxhlMWJlxtQP6uY"

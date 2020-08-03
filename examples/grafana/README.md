@@ -168,3 +168,61 @@ need to set the password for a user the first time you log in.
 
 At this point, you can use the interface as outlined at the Grafana project site
 [https://grafana.com/](https://grafana.com/).
+
+## Configure Grafana with SSL support ##
+
+Assume you have a pair of SSL certificate and key files named domain.crt and domain.key and placed them in a directory called /home/admin/certs.
+
+Make a copy of your running Grafana container's configuration file named “defaults.ini” located in /usr/share/grafana/conf and save it in a local directory, say, /home/admin/conf.  Use docker cp command to copy from your Grafana container named "grafana" as follows:
+
+```
+docker cp grafana:/usr/share/grafana/conf/defaults.ini /home/admin/conf/defaults.ini
+```
+
+The following entries in the saved copy of the defaults.ini file should be modified as:
+
+```
+protocol = https
+cert_file = /certs/domain.crt
+cert_key = /certs/domain.key
+```
+
+Now, follow these steps:
+
+1. Create a Docker volume to store the certificates in 
+```
+docker volume create grafana_certs
+```
+2. Start Grafana listening to a different port (name this instance grafana-https for clarity) and mount the  volume to /certs directory in the container
+```
+docker run --name grafana-https -v grafana_certs:/certs -p 443:3000 -d grafana/grafana
+```
+
+3. Copy the certificate files to the running container
+```
+docker cp /home/admin/certs/domain.crt grafana-https:/certs
+docker cp /home/admin/certs/domain.key grafana-https:/certs
+```
+
+4. Copy the modified Grafana configuration file defaults.ini to the Grafana container 
+```
+docker cp defaults.ini grafana-https:/certs
+```
+
+5. Get a bash shell in the Grafana container
+```
+docker exec -it -u root grafana-https bash
+```
+
+6. Overwrite the defaults.ini configuration file by your copy to change the protocol to https
+```
+cp /certs/defaults.ini /usr/share/grafana/conf
+exit
+```
+
+7. Now, restart the container
+```
+docker restart grafana-https
+```
+
+8. Finally, launch Grafana simply by using https://hostname/

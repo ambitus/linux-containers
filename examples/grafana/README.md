@@ -141,7 +141,8 @@ docker run --name prometheus --network monitoring -p 9090:9090 -d prometheus
 **Start cAdvisor**
 
 ```
-docker run -v /:/rootfs:ro -v /var/run:/var/run:ro -v /sys:/sys:ro \
+docker run -v /proc:/rootfs/proc:ro -v /media:/rootfs/media:ro \
+-v /var/run/docker.sock:/var/run/docker.sock:ro -v /sys:/sys:ro \
 -v /var/lib/docker/:/var/lib/docker:ro -v /dev/disk/:/dev/disk:ro \
 -p 8080:8080 -d --network monitoring --name=cadvisor cadvisor
 ```
@@ -149,8 +150,8 @@ docker run -v /:/rootfs:ro -v /var/run:/var/run:ro -v /sys:/sys:ro \
 **Start node_exporter**
 
 ```
-docker run --name nodeexporter -v /proc:/host/proc:ro -v /sys:/host/sys:ro \
--v /:/rootfs:ro -v /etc/hostname:/etc/host_hostname:ro -p 9100:9100 -d \
+docker run --name nodeexporter -v /proc:/host/proc -v /sys:/host/sys:ro \
+-v /media:/rootfs/media:ro -v /etc/hostname:/etc/host_hostname:ro -p 9100:9100 -d \
 --network monitoring nodeexporter
 ```
 

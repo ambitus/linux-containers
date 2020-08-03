@@ -41,3 +41,32 @@ container again as outlined above, and log in.
 |---------------|--------------|
 | Build time | n/a |
 | Installed size | ~23 MB |
+
+ 
+**Configuring Portainer with SSL support**
+
+Assume you have a pair of SSL certificate and key files named as domain.crt and domain.key and placed them in a directory called /home/admin/certs.
+
+
+Now, do the following:
+1. Create a Docker volume to copy the certificates to
+```
+docker volume create portainer_certs
+```
+
+2. Start a BusyBox container and mount the certificates volume so that you can copy the certificate files to it
+```
+docker run -it -v portainer_certs:/certs --name config -d busybox
+```
+
+3. Copy the certificate files
+```
+docker cp /home/admin/certs/domain.crt config:/certs
+docker cp /home/admin/certs/domain.key config:/certs
+```
+
+4. Start Portainer as follows:
+```
+docker run -d -p 443:9000 --name portainer-https -v /var/run/docker.sock:/var/run/docker.sock:ro -v portainer_certs:/certs -v portainer_data:/data portainer/portainer:linux-s390x --ssl --sslcert /certs/domain.crt --sslkey /certs/domain.key
+```
+5. Now launch Portainer simply as https://hostname/ (if you use a port other than 443, then launch as https://hostname:port/)

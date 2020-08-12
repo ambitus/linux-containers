@@ -58,11 +58,11 @@ RUN update-alternatives --install "/usr/bin/ant" "ant" "/opt/ant/bin/ant" 1 && \
 ####################################
 # Install Java
 ####################################
-ENV JAVA_VERSION 1.8.0_sr6fp11
+ENV JAVA_VERSION 1.8.0_sr6fp15
 
 RUN set -eux; \
     ARCH="s390x"; \
-    ESUM='560f41c60495b525fa70a4ec52f7061649b768b083b6577882ae5508b2e8653d'; \
+    ESUM='7bd69fa987bad2b0681a474b6c2775a6466586c64e99535a9ba96ed0dccd69ea'; \
     YML_FILE='sdk/linux/s390x/index.yml'; \
     BASE_URL="https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/meta/"; \
     wget -q -U UA_IBM_JAVA_Docker -O /tmp/index.yml ${BASE_URL}/${YML_FILE}; \
@@ -97,13 +97,13 @@ ENV MAVEN_HOME /usr/share/maven
 ####################################
 # Install Go
 ####################################
-ENV GOLANG_VERSION 1.13.12
+ENV GOLANG_VERSION 1.14.7
 
 RUN set -eux; \
 	dpkgArch="s390x"; \
 	case "${dpkgArch##*-}" in \
-		s390x) goRelArch='linux-s390x'; goRelSha256='8dd2d50666176cbe5cab7557081acb0f380cef2240e18d05db7faffc03d8f356' ;; \
-		*) goRelArch='src'; goRelSha256='17ba2c4de4d78793a21cc659d9907f4356cd9c8de8b7d0899cdedcef712eba34'; \
+		s390x) goRelArch='linux-s390x'; goRelSha256='ea570b3caa0c271da440f568ab646cfea80d712c51fb4d08189bb66bd5eb949c' ;; \
+		*) goRelArch='src'; goRelSha256='064392433563660c73186991c0a315787688e7c38a561e26647686f89b6c30e3'; \
 			echo >&2; echo >&2 "warning: current architecture ($dpkgArch) does not have a corresponding Go binary release; will be building from source"; echo >&2 ;; \
 	esac; \
 	\
@@ -186,7 +186,7 @@ RUN cd /usr/local/bin \
 # Install Pip
 ####################################
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 20.1.1
+ENV PYTHON_PIP_VERSION 20.2.1
 
 RUN set -ex; \
 	\

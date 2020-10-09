@@ -1,3 +1,8 @@
+#Copyright Contributors to the Ambitus Project.
+#
+#SPDX-License-Identifier: Apache-2.0
+
+
 import requests, json, os, logging, time
 from elasticsearch import Elasticsearch
 es = Elasticsearch([{'host': '### YOUR APPLIANCE URL HERE ###', 'port': '9200'}])

@@ -133,7 +133,7 @@ First, access your Grafana container via the address `http://### YOUR APPLIANCE 
 
 From this page, click the green button "Add Data Source", then click type "Elasticsearch". Enter the following settings in the setup menu:
 
-![IMS](/forexDataSource.PNG?raw=true)
+![IMS](/examples/forexDataSource.PNG?raw=true)
 
 Provided that everything is working correctly, clicking the button "Save and Test" should show the message "Index OK. Time field name OK." in your Grafana window. Now that your Datasources are set up, you can load in the sample Dashboard.
 
@@ -146,7 +146,7 @@ To import a new dashboard, hover over the "Four Squares" icon on Grafana, (locat
 
 You should see the following dashboard appear:
 
-![IMS](/Grafana-Demo-FOREX-master/forexImage.PNG?raw=true)
+![IMS](/examples/Grafana-Demo-FOREX-master/forexImage.PNG?raw=true)
 
 
 If the graphs look empty, do not be alarmed! There will only be a single data point at first, with more being added every three minutes as long as the `backgroundForex` script keeps running. You'll see graphs of the USD/Euro Exchange Rate , as well as the Bid/Ask spread and the high, low, and total change inside your selected timeframe. After waiting some time for more points to appear, you can experiement with the viewed timeframe - Click on the Date to the top right of the dashboard screen and you should see a dialogue appear that lets you specify your time range. 

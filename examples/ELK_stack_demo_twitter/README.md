@@ -110,4 +110,4 @@ Buckets->Split Slices with the bucket aggregates
 `text:Watson`
 To compare the number of tweets referencing each over a selected timeframe.
 
-![IMS](/ELK_stack_demo_twitter/pieChartKibana.PNG?raw=true)
+![IMS](/examples/ELK_stack_demo_twitter/pieChartKibana.PNG?raw=true)

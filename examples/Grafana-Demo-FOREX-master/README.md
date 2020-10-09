@@ -133,7 +133,7 @@ First, access your Grafana container via the address `http://### YOUR APPLIANCE 
 
 From this page, click the green button "Add Data Source", then click type "Elasticsearch". Enter the following settings in the setup menu:
 
-![IMS](/examples/forexDataSource.PNG?raw=true)
+![IMS](/examples/Grafana-Demo-FOREX-master/forexDataSource.PNG?raw=true)
 
 Provided that everything is working correctly, clicking the button "Save and Test" should show the message "Index OK. Time field name OK." in your Grafana window. Now that your Datasources are set up, you can load in the sample Dashboard.
 
